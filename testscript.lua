@@ -3,12 +3,26 @@ if not game:IsLoaded() then
     game.Loaded:Wait()
 end
 
+--Teleport Bypass
+local plr = game:service"Players".LocalPlayer
+function tp(x,y,z,d)
+	time = d/speed
+    tweenService = game:GetService("TweenService")
+	tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Linear)
+    tween = tweenService:Create(plr.Character.HumanoidRootPart, tweenInfo, {CFrame = CFrame.new(x,y,z)})
+    tween:Play()
+	tween.Completed:Wait()
+end
+--Teleport Bypass End
 
---Kill Switch(Reset game after 6 minutes)
-function killswitch()
-	wait(killtime)
-	local Event = game:GetService("ReplicatedStorage")["RS_Package"].Remotes.VoteReset
-	Event:FireServer()
+
+--Interact remote
+function interact(x)
+    local Event1 = game:GetService("ReplicatedStorage")["RS_Package"].Remotes.StartInteraction
+    local Event2 = game:GetService("ReplicatedStorage")["RS_Package"].Remotes.CompleteInteraction
+    Event1:FireServer(x)
+    wait(0.1)
+    Event2:FireServer(x)
 end
 
 
@@ -18,6 +32,14 @@ game:GetService("ReplicatedStorage")["RS_Package"].Remotes.PlayerReady:FireServe
 wait(6)
 
 
+--Kill Switch(Reset game after 6 minutes)
+function killswitch()
+	wait(killtime)
+	local Event = game:GetService("ReplicatedStorage")["RS_Package"].Remotes.VoteReset
+	Event:FireServer()
+end
+
+
 --Remove Map
 function removemap()
 	game.Workspace.Map.ExcessParts:Destroy()
@@ -25,8 +47,8 @@ end
 
 
 --Prevent Falling
-HumanoidRootPart = game:service"Players".LocalPlayer.Character["HumanoidRootPart"]
-Descendants = game:service"Players".LocalPlayer.Character:GetDescendants()
+HumanoidRootPart = plr.Character["HumanoidRootPart"]
+Descendants = plr.Character:GetDescendants()
 Mass = 0
 for i, v in ipairs(Descendants) do
     if v:IsA("BasePart") then
@@ -44,28 +66,6 @@ function noclip()
     while true do wait()
         game.Players.LocalPlayer.Character:findFirstChildOfClass("Humanoid"):ChangeState(11)
     end
-end
-
-
---Teleport Bypass
-local plr = game:service"Players".LocalPlayer
-function tp(x,y,z,d)
-	time = d/speed
-	tweenService = game:GetService("TweenService")
-	tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Linear)
-	tween = tweenService:Create(plr.Character.HumanoidRootPart, tweenInfo, {CFrame = CFrame.new(x,y,z)})
-	tween:Play()
-	tween.Completed:Wait()
-end
-
-
---Interact remote
-function interact(x)
-    local Event1 = game:GetService("ReplicatedStorage")["RS_Package"].Remotes.StartInteraction
-    local Event2 = game:GetService("ReplicatedStorage")["RS_Package"].Remotes.CompleteInteraction
-    Event1:FireServer(x)
-    wait(0.1)
-    Event2:FireServer(x)
 end
 
 
@@ -115,7 +115,7 @@ end
 --Grab lootbox
 function lootbox()
 	for _,i in pairs(game.Workspace.SafeSpots:GetChildren()) do
-		if not i.Name == 'SafesScript' then
+		if i.Name ~= 'SafesScript' then
 			repeat wait()
 			local posx = i.PrimaryPart.Position.x
 			local posy = i.PrimaryPart.Position.y
@@ -124,7 +124,6 @@ function lootbox()
 			tp(posx,posy+1,posz,dis)
 			interact(i)
 			until not i:IsDescendantOf(Workspace.SafeSpots)
-		
 		elseif i == nil then
 			return true
 		else end
@@ -139,6 +138,7 @@ function dropbag()
 	local posz = game.Workspace.BagSecuredArea.EscapeVan.PrimaryPart.Position.z
 	local dis = (plr.Character.Torso.Position - game.Workspace.BagSecuredArea.EscapeVan.PrimaryPart.Position).Magnitude
 	tp(posx,posy,posz,dis)
+	tween.Completed:Wait()
 	game:GetService("ReplicatedStorage")["RS_Package"].Remotes.ThrowBag:FireServer(Vector3.new(0, 0, 0))
 	wait(3)
 	return true
