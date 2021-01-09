@@ -51,10 +51,10 @@ end
 local plr = game:service"Players".LocalPlayer
 function tp(x,y,z,d)
 	time = d/speed
-    tweenService = game:GetService("TweenService")
+	tweenService = game:GetService("TweenService")
 	tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Linear)
-    tween = tweenService:Create(plr.Character.HumanoidRootPart, tweenInfo, {CFrame = CFrame.new(x,y,z)})
-    tween:Play()
+	tween = tweenService:Create(plr.Character.HumanoidRootPart, tweenInfo, {CFrame = CFrame.new(x,y,z)})
+	tween:Play()
 	tween.Completed:Wait()
 end
 
