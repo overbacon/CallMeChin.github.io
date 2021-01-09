@@ -11,6 +11,7 @@ function tp(x,y,z,d)
 	tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Linear)
     tween = tweenService:Create(plr.Character.HumanoidRootPart, tweenInfo, {CFrame = CFrame.new(x,y,z)})
     tween:Play()
+	tween.Completed:Wait()
 end
 --Teleport Bypass End
 
@@ -78,7 +79,6 @@ function lootsmall()
 			local posz = i.PrimaryPart.Position.z
 			local dis = (plr.Character.Torso.Position - i.PrimaryPart.Position).Magnitude
 			tp(posx,posy+1,posz,dis)
-			tween.Completed:Wait()
 			interact(i)
 			until not i:IsDescendantOf(Workspace.Lootables)
 		
@@ -101,18 +101,35 @@ function lootbig()
 			local posz = i.PrimaryPart.Position.z
 			local dis = (plr.Character.Torso.Position - i.PrimaryPart.Position).Magnitude
 			tp(posx,posy+1,posz,dis)
-			tween.Completed:Wait()
 			interact(i)
 			until not i:IsDescendantOf(Workspace.BigLoot)
 		
 		elseif i == nil then
 			return true
 			
-		else
-		end
+		else end
     end
 end
 
+
+--Grab lootbox
+function lootbox()
+	for _,i in pairs(game.Workspace.SafeSpots:GetChildren()) do
+		if i.Name ~= 'SafesScript' then
+			repeat wait()
+			local posx = i.PrimaryPart.Position.x
+			local posy = i.PrimaryPart.Position.y
+			local posz = i.PrimaryPart.Position.z
+			local dis = (plr.Character.Torso.Position - i.PrimaryPart.Position).Magnitude
+			tp(posx,posy+1,posz,dis)
+			interact(i)
+			until not i:IsDescendantOf(Workspace.SafeSpots)
+		elseif i == nil then
+			return true
+		else end
+	end
+end
+		
 
 --Drop off bags
 function dropbag()
@@ -139,6 +156,7 @@ end
 spawn(noclip)
 spawn(killswitch)
 removemap()
+if grabsafe == true then if lootbox() == true then end end
 if lootsmall() == true then end
 if lootbig() == true then end
 if dropbag() == true then end
