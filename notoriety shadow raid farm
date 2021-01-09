@@ -1,3 +1,12 @@
+--Speed (Decrease this if you are getting killed)
+local speed = 35
+
+--Time before game restart(In second)
+killtime = 360
+
+--Item to ignore
+local ignore = {'Money'}
+
 --Wait For Game To Load
 if not game:IsLoaded() then
     game.Loaded:Wait()
@@ -70,7 +79,7 @@ end
 
 --Loot Small Loots
 local function lootsmall()
-    for _,i in pairs(game.Workspace.Lootables:GetChildren()) do
+    for _,i in pairs(Workspace.Lootables:GetChildren()) do
 		if not table.find(ignore,i.Name) then
 			repeat wait()
 			local posx = i.PrimaryPart.Position.x
@@ -80,7 +89,7 @@ local function lootsmall()
 			tp(posx,posy+1,posz,dis)
 			tween.Completed:Wait()
 			interact(i)
-			until not i:IsDescendantOf(game.Workspace.Lootables)
+			until not i:IsDescendantOf(Workspace.Lootables)
 		
 		elseif i == nil then
 			return true
@@ -93,7 +102,7 @@ end
 
 --Loot Big Loots
 local function lootbig()
-    for _,i in pairs(game.Workspace.BigLoot:GetChildren()) do
+    for _,i in pairs(Workspace.BigLoot:GetChildren()) do
 		if not table.find(ignore,i.Name) then
 			repeat wait()
 			local posx = i.PrimaryPart.Position.x
@@ -103,7 +112,7 @@ local function lootbig()
 			tp(posx,posy+1,posz,dis)
 			tween.Completed:Wait()
 			interact(i)
-			until not i:IsDescendantOf(game.Workspace.BigLoot)
+			until not i:IsDescendantOf(Workspace.BigLoot)
 		
 		elseif i == nil then
 			return true
