@@ -1,3 +1,18 @@
+--Speed (Decrease this if you are getting killed)
+speed = 35
+
+--Time before game restart(In second)
+killtime = 360
+
+--Item to ignore
+ignore = {'Money'}
+
+--Grab safe box or not(Default true)
+grabsafe = true
+
+--Item that is in safe
+safeitem = {'JewelCrown','RingBox','Money','Coke'}
+
 --Wait For Game To Load
 if not game:IsLoaded() then
     game.Loaded:Wait()
@@ -72,12 +87,22 @@ end
 --Loot Small Loots
 function lootsmall()
     for _,i in pairs(Workspace.Lootables:GetChildren()) do
-		if not table.find(ignore,i.Name) then
+		if i.Name == 'JewelSpot' then
+			local posx = i:FindFirstChild("SmallJewels2").PrimaryPart.Position.x
+			local posy = i:FindFirstChild("SmallJewels2").PrimaryPart.Position.y
+			local posz = i:FindFirstChild("SmallJewels2").PrimaryPart.Position.z
+			local dis = (plr.Character.Torso.Position - i:FindFirstChild("SmallJewels2").PrimaryPart.Position).Magnitude
 			repeat wait()
+			tp(posx,posy+1,posz,dis)
+			interact(i:FindFirstChild("SmallJewels2"))
+			until not i.SmallJewels2:IsDescendantOf(Workspace)
+			
+		elseif not table.find(ignore,i.Name) then
 			local posx = i.PrimaryPart.Position.x
 			local posy = i.PrimaryPart.Position.y
 			local posz = i.PrimaryPart.Position.z
 			local dis = (plr.Character.Torso.Position - i.PrimaryPart.Position).Magnitude
+			repeat wait()
 			tp(posx,posy+1,posz,dis)
 			interact(i)
 			until not i:IsDescendantOf(Workspace.Lootables)
@@ -95,11 +120,11 @@ end
 function lootbig()
     for _,i in pairs(Workspace.BigLoot:GetChildren()) do
 		if not table.find(ignore,i.Name) then
-			repeat wait()
 			local posx = i.PrimaryPart.Position.x
 			local posy = i.PrimaryPart.Position.y
 			local posz = i.PrimaryPart.Position.z
 			local dis = (plr.Character.Torso.Position - i.PrimaryPart.Position).Magnitude
+			repeat wait()
 			tp(posx,posy+1,posz,dis)
 			interact(i)
 			until not i:IsDescendantOf(Workspace.BigLoot)
@@ -116,11 +141,11 @@ end
 function lootbox()
 	for _,i in pairs(game.Workspace.SafeSpots:GetChildren()) do
 		if i.Name ~= 'SafesScript' then
-			repeat wait()
 			local posx = i.PrimaryPart.Position.x
 			local posy = i.PrimaryPart.Position.y
 			local posz = i.PrimaryPart.Position.z
 			local dis = (plr.Character.Torso.Position - i.PrimaryPart.Position).Magnitude
+			repeat wait()
 			tp(posx,posy+1,posz,dis)
 			interact(i)
 			until not i:IsDescendantOf(Workspace.SafeSpots)
@@ -130,6 +155,44 @@ function lootbox()
 	end
 end
 		
+--Picklock
+function picklock()
+	for _,i in pairs(game.Workspace.Map:GetChildren()) do
+		if i.Name == 'Safe' then
+			local posx = i.PickLock.Position.x
+			local posy = i.PickLock.Position.y
+			local posz = i.PickLock.Position.z
+            local dis = (plr.Character.Torso.Position - i.PickLock.Position).Magnitude
+			repeat wait()
+			tp(posx,posy+1,posz,dis)
+			interact(i)
+			until i.Name == 'OpenedSafe'
+			if takeloot(i) == true then end
+		elseif i == nil then
+			return true
+		else
+		end
+	end
+end
+
+--Take Loot From Safe
+function takeloot(safe)
+	for _,v in pairs(safe:GetDescendants()) do
+		if table.find(safeitem,v.Name) then
+			local posx = v.PrimaryPart.Position.x
+			local posy = v.PrimaryPart.Position.y
+			local posz = v.PrimaryPart.Position.z
+			local dis = (plr.Character.Torso.Position - v.PrimaryPart.Position).Magnitude
+			repeat wait()
+			tp(posx,posy+1,posz,dis)
+			interact(v)
+			until not v:IsDescendantOf(safe)
+		elseif v == nil then
+			return true
+		else
+		end
+	end
+end
 
 --Drop off bags
 function dropbag()
@@ -138,7 +201,6 @@ function dropbag()
 	local posz = game.Workspace.BagSecuredArea.EscapeVan.PrimaryPart.Position.z
 	local dis = (plr.Character.Torso.Position - game.Workspace.BagSecuredArea.EscapeVan.PrimaryPart.Position).Magnitude
 	tp(posx,posy,posz,dis)
-	tween.Completed:Wait()
 	game:GetService("ReplicatedStorage")["RS_Package"].Remotes.ThrowBag:FireServer(Vector3.new(0, 0, 0))
 	wait(3)
 	return true
@@ -157,7 +219,8 @@ spawn(noclip)
 spawn(killswitch)
 removemap()
 if grabsafe == true then if lootbox() == true then end end
-if lootsmall() == true then end
+if picklock() == true then end
+local status, err = pcall(function() if lootsmall() == true then end)
 if lootbig() == true then end
 if dropbag() == true then end
 reset()
