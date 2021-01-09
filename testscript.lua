@@ -114,7 +114,7 @@ end
 
 --Grab lootbox
 function lootbox()
-	for ,i in pairs(game.Workspace.SafeSpots:GetChildren()) do
+	for _,i in pairs(game.Workspace.SafeSpots:GetChildren()) do
 		if not i.Name == 'SafesScript' then
 			repeat wait()
 			local posx = i.PrimaryPart.Position.x
