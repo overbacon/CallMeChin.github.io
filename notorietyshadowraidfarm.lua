@@ -138,7 +138,6 @@ function dropbag()
 	local posz = game.Workspace.BagSecuredArea.EscapeVan.PrimaryPart.Position.z
 	local dis = (plr.Character.Torso.Position - game.Workspace.BagSecuredArea.EscapeVan.PrimaryPart.Position).Magnitude
 	tp(posx,posy,posz,dis)
-	tween.Completed:Wait()
 	game:GetService("ReplicatedStorage")["RS_Package"].Remotes.ThrowBag:FireServer(Vector3.new(0, 0, 0))
 	wait(3)
 	return true
