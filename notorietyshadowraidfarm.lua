@@ -32,7 +32,7 @@ wait(6)
 
 
 --Kill Switch(Reset game after 6 minutes)
-local function killswitch()
+function killswitch()
 	wait(killtime)
 	local Event = game:GetService("ReplicatedStorage")["RS_Package"].Remotes.VoteReset
 	Event:FireServer()
@@ -40,7 +40,7 @@ end
 
 
 --Remove Map
-local function removemap()
+function removemap()
 	game.Workspace.Map.ExcessParts:Destroy()
 end
 
@@ -61,7 +61,7 @@ end
 
 
 --Noclip
-local function noclip()
+function noclip()
     while true do wait()
         game.Players.LocalPlayer.Character:findFirstChildOfClass("Humanoid"):ChangeState(11)
     end
@@ -69,7 +69,7 @@ end
 
 
 --Loot Small Loots
-local function lootsmall()
+function lootsmall()
     for _,i in pairs(Workspace.Lootables:GetChildren()) do
 		if not table.find(ignore,i.Name) then
 			repeat wait()
@@ -92,7 +92,7 @@ end
 
 
 --Loot Big Loots
-local function lootbig()
+function lootbig()
     for _,i in pairs(Workspace.BigLoot:GetChildren()) do
 		if not table.find(ignore,i.Name) then
 			repeat wait()
@@ -115,7 +115,7 @@ end
 
 
 --Drop off bags
-local function dropbag()
+function dropbag()
 	local posx = game.Workspace.BagSecuredArea.EscapeVan.PrimaryPart.Position.x
 	local posy = game.Workspace.BagSecuredArea.EscapeVan.PrimaryPart.Position.y
 	local posz = game.Workspace.BagSecuredArea.EscapeVan.PrimaryPart.Position.z
@@ -129,7 +129,7 @@ end
 
 
 --Reset game
-local function reset()
+function reset()
 	local Event = game:GetService("ReplicatedStorage")["RS_Package"].Remotes.VoteReset
 	Event:FireServer()
 end
