@@ -72,64 +72,119 @@ end
 --Loot Small Loots
 function lootsmall()
     for _,i in pairs(Workspace.Lootables:GetChildren()) do
-		if not table.find(ignore,i.Name) then
-			repeat wait()
-			local posx = i.PrimaryPart.Position.x
-			local posy = i.PrimaryPart.Position.y
-			local posz = i.PrimaryPart.Position.z
-			local dis = (plr.Character.Torso.Position - i.PrimaryPart.Position).Magnitude
-			tp(posx,posy+1,posz,dis)
-			interact(i)
-			until not i:IsDescendantOf(Workspace.Lootables)
-		
+		if not table.find(ignore,i.Name) then	
+			if i.Name == 'JewelSpot' then
+				local posx = i:FindFirstChild("SmallJewels2").PrimaryPart.Position.x
+				local posy = i:FindFirstChild("SmallJewels2").PrimaryPart.Position.y
+				local posz = i:FindFirstChild("SmallJewels2").PrimaryPart.Position.z
+				local dis = (plr.Character.Torso.Position - i:FindFirstChild("SmallJewels2").PrimaryPart.Position).Magnitude
+				tp(posx,posy+1,posz,dis)
+				interact(i:FindFirstChild("SmallJewels2"))
+				interact(i:FindFirstChild("SmallJewels2"))
+				interact(i:FindFirstChild("SmallJewels2"))
+				i:Destroy()
+
+			elseif not table.find(ignore,i.Name) then
+				local posx = i.PrimaryPart.Position.x
+				local posy = i.PrimaryPart.Position.y
+				local posz = i.PrimaryPart.Position.z
+				local dis = (plr.Character.Torso.Position - i.PrimaryPart.Position).Magnitude
+				repeat wait()
+				tp(posx,posy+1,posz,dis)
+				interact(i)
+				until (not i:IsDescendantOf(Workspace.Lootables)) or i.Name == 'OpenedRegister'
+			else end
 		elseif i == nil then
 			return true
-			
-		else
-		end
+		else end
     end
 end
 
 
 --Loot Big Loots
 function lootbig()
-    for _,i in pairs(Workspace.BigLoot:GetChildren()) do
-		if not table.find(ignore,i.Name) then
-			repeat wait()
-			local posx = i.PrimaryPart.Position.x
-			local posy = i.PrimaryPart.Position.y
-			local posz = i.PrimaryPart.Position.z
-			local dis = (plr.Character.Torso.Position - i.PrimaryPart.Position).Magnitude
-			tp(posx,posy+1,posz,dis)
-			interact(i)
-			until not i:IsDescendantOf(Workspace.BigLoot)
-		
-		elseif i == nil then
-			return true
-			
-		else end
-    end
+	if game.Workspace:FindFirstChild('BigLoot') ~= nil then
+		for _,i in pairs(game.Workspace.BigLoot:GetChildren()) do
+			if not table.find(ignore,i.Name) then
+				local posx = i.PrimaryPart.Position.x
+				local posy = i.PrimaryPart.Position.y
+				local posz = i.PrimaryPart.Position.z
+				local dis = (plr.Character.Torso.Position - i.PrimaryPart.Position).Magnitude
+				repeat wait()
+				tp(posx,posy+1,posz,dis)
+				interact(i)
+				until not i:IsDescendantOf(Workspace.BigLoot)
+
+			elseif i == nil then
+				return true
+			else end
+		end
+	else
+		return true
+	end
 end
 
 
 --Grab lootbox
 function lootbox()
-	for _,i in pairs(game.Workspace.SafeSpots:GetChildren()) do
-		if i.Name ~= 'SafesScript' then
-			repeat wait()
-			local posx = i.PrimaryPart.Position.x
-			local posy = i.PrimaryPart.Position.y
-			local posz = i.PrimaryPart.Position.z
-			local dis = (plr.Character.Torso.Position - i.PrimaryPart.Position).Magnitude
-			tp(posx,posy+1,posz,dis)
-			interact(i)
-			until not i:IsDescendantOf(Workspace.SafeSpots)
-		elseif i == nil then
-			return true
-		else end
+	if game.Workspace:FindFirstChild('SafeSpots') ~= nil then
+		for _,i in pairs(game.Workspace.SafeSpots:GetChildren()) do
+			if i.Name ~= 'SafesScript' then
+				local posx = i.PrimaryPart.Position.x
+				local posy = i.PrimaryPart.Position.y
+				local posz = i.PrimaryPart.Position.z
+				local dis = (plr.Character.Torso.Position - i.PrimaryPart.Position).Magnitude
+				repeat wait()
+				tp(posx,posy+1,posz,dis)
+				interact(i)
+				until not i:IsDescendantOf(Workspace.SafeSpots)
+			elseif i == nil then
+				return true
+			else end
+		end
+	else
+		return true
 	end
 end
-		
+
+--Picklock
+function picklock() 
+	for _,i in pairs(game.Workspace.Map:GetChildren()) do
+		if i.Name == 'Safe' then
+			local posx = i.PickLock.Position.x
+			local posy = i.PickLock.Position.y
+			local posz = i.PickLock.Position.z
+            local dis = (plr.Character.Torso.Position - i.PickLock.Position).Magnitude
+			repeat wait()
+			tp(posx,posy+1,posz,dis)
+			interact(i)
+			until i.Name == 'OpenedSafe'
+			if takeloot(i) == true then end
+		elseif i == nil then
+			return true
+		else
+		end
+	end
+end
+
+--Take Loot From Safe
+function takeloot(safe)
+	for _,v in pairs(safe:GetDescendants()) do
+		if table.find(safeitem,v.Name) then
+			local posx = v.PrimaryPart.Position.x
+			local posy = v.PrimaryPart.Position.y
+			local posz = v.PrimaryPart.Position.z
+			local dis = (plr.Character.Torso.Position - v.PrimaryPart.Position).Magnitude
+			repeat wait()
+			tp(posx,posy+1,posz,dis)
+			interact(v)
+			until not v:IsDescendantOf(safe)
+		elseif v == nil then
+			return true
+		else
+		end
+	end
+end
 
 --Drop off bags
 function dropbag()
@@ -156,6 +211,7 @@ spawn(noclip)
 spawn(killswitch)
 removemap()
 if grabsafe == true then if lootbox() == true then end end
+if picklock() == true then end
 if lootsmall() == true then end
 if lootbig() == true then end
 if dropbag() == true then end
