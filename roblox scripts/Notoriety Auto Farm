@@ -101,34 +101,6 @@ function noclip()
 end
 
 
---Loot Small Loots
-function lootsmall()
-    for _,i in pairs(Workspace.Lootables:GetChildren()) do
-		if not table.find(ignore,i.Name) then
-			if i.Name == 'JewelSpot' then
-				local pos = i:FindFirstChild("SmallJewels2").PrimaryPart.Position
-				tp(pos.x,pos.y+1,pos.z)
-				interact(i:FindFirstChild("SmallJewels2"))
-				interact(i:FindFirstChild("SmallJewels2"))
-				interact(i:FindFirstChild("SmallJewels2"))
-				i:Destroy()
-
-			elseif i == nil then
-				return true
-			
-			else
-				local pos = i.PrimaryPart.Position
-				repeat wait()
-				tp(pos.x,pos.y+1,pos.z)
-				interact(i)
-				until (not i:IsDescendantOf(Workspace.Lootables)) or i.Name == 'OpenedRegister'
-			end
-		else
-		end
-    end
-end
-
-
 --Loot Big Loots
 function lootbig()
 	if game.Workspace:FindFirstChild('BigLoot') ~= nil then
@@ -150,24 +122,7 @@ function lootbig()
 end
 
 
---Grab lootbox
-function lootbox()
-	if game.Workspace:FindFirstChild('SafeSpots') ~= nil then
-		for _,i in pairs(game.Workspace.SafeSpots:GetChildren()) do
-			if i.Name ~= 'SafesScript' then
-				local pos = i.PrimaryPart.Position
-				repeat wait()
-				tp(pos.x,pos.y+1,pos.z)
-				interact(i)
-				until not i:IsDescendantOf(Workspace.SafeSpots)
-			elseif i == nil then
-				return true
-			else end
-		end
-	else
-		return true
-	end
-end
+
 
 --Picklock
 function picklock() 
@@ -223,9 +178,8 @@ end
 spawn(noclip)
 spawn(killswitch)
 removemap()
-if grabsafe == true then if lootbox() == true then end end
+if grabsafe == true then
 if picklock() == true then end
-if lootsmall() == true then end
 if lootbig() == true then end
 if dropbag() == true then end
 reset()
